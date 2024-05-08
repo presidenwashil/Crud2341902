@@ -3,7 +3,6 @@
 ## Persyaratan Sistem
 
 - **JDK15**
-- 
 - **Apache NetBeans IDE 12.0**
 - **MariaDB 10.4/MySQL 15.1**
 - **XAMPP v3.2.4 (dengan Apache dan MySQL)**
