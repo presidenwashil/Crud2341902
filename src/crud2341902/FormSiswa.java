@@ -45,6 +45,21 @@ public class FormSiswa extends javax.swing.JFrame {
             //
         }
     }
+
+    public void tampil_hasil_pencarian(ResultSet hasilPencarian) {
+        tabmode.setRowCount(0); // Menghapus semua baris yang ada dalam tabel
+        try {
+            while (hasilPencarian.next()) {
+                String id = hasilPencarian.getString("id");
+                String nama = hasilPencarian.getString("nama");
+                String alamat = hasilPencarian.getString("alamat");
+                String[] data = {id, nama, alamat};
+                tabmode.addRow(data);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
     
     // method untuk reset text 
     public void reset_text() {
@@ -76,6 +91,10 @@ public class FormSiswa extends javax.swing.JFrame {
         btn_keluar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel_siswa = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        txt_pencarian = new javax.swing.JTextField();
+        btn_cari = new javax.swing.JButton();
+        btn_semua = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,6 +165,24 @@ public class FormSiswa extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tabel_siswa);
 
+        jLabel5.setText("Pencarian");
+
+        btn_cari.setMnemonic('C');
+        btn_cari.setText("Cari");
+        btn_cari.setToolTipText("");
+        btn_cari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cariActionPerformed(evt);
+            }
+        });
+
+        btn_semua.setText("Semua Data");
+        btn_semua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_semuaActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,41 +190,54 @@ public class FormSiswa extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .add(29, 29, 29)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(btn_simpan, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btn_reset, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btn_ubah, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btn_hapus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btn_keluar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jLabel1)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel4)
-                                    .add(jLabel3)
-                                    .add(jLabel2))
-                                .add(30, 30, 30)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(txt_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
-                                    .add(txt_nama)
-                                    .add(txt_alamat))))
-                        .add(18, 18, 18)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 350, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                        .add(jLabel1)
+                        .add(layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(jLabel4)
+                                .add(jLabel3)
+                                .add(jLabel2))
+                            .add(30, 30, 30)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                .add(txt_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                                .add(txt_nama)
+                                .add(txt_alamat))))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(btn_simpan, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btn_reset, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btn_ubah, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btn_hapus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btn_keluar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(jLabel5)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createSequentialGroup()
+                                    .add(btn_cari, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(btn_semua, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(0, 0, Short.MAX_VALUE))
+                                .add(txt_pencarian)))))
+                .add(18, 18, 18)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 350, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel1)
-                .add(31, 31, 31)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
+                        .add(69, 69, 69)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 228, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel1)
+                        .add(31, 31, 31)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel2)
                             .add(txt_id, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -198,16 +248,23 @@ public class FormSiswa extends javax.swing.JFrame {
                         .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(txt_alamat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel3)))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 103, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(18, 18, 18)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btn_simpan)
-                    .add(btn_reset)
-                    .add(btn_ubah)
-                    .add(btn_hapus)
-                    .add(btn_keluar))
-                .addContainerGap(20, Short.MAX_VALUE))
+                            .add(jLabel3))
+                        .add(18, 18, 18)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(btn_simpan)
+                            .add(btn_reset)
+                            .add(btn_ubah)
+                            .add(btn_hapus)
+                            .add(btn_keluar))
+                        .add(18, 18, 18)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(txt_pencarian, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel5))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(btn_cari)
+                            .add(btn_semua))))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
@@ -228,11 +285,11 @@ public class FormSiswa extends javax.swing.JFrame {
                 aa.setID(txt_id.getText());
                 aa.setNama(txt_nama.getText());
                 aa.setAlamat(txt_alamat.getText());
-                aa.simpanData(aa.getID(), aa.getNama(), aa.getAlamat());
-                JOptionPane.showMessageDialog(null, "Data berhasil tersimpan", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                String result = aa.simpanData(); // remove arguments here
+                JOptionPane.showMessageDialog(null, result, "Informasi", JOptionPane.INFORMATION_MESSAGE);
                 tampil_database(); reset_text();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Data gagal tersimpan" , "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Informasi", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_simpanActionPerformed
@@ -256,11 +313,11 @@ public class FormSiswa extends javax.swing.JFrame {
                 aa.setID(txt_id.getText()); 
                 aa.setNama(txt_nama.getText());
                 aa.setAlamat(txt_alamat.getText());
-                aa.ubahData(aa.getID(), aa.getNama(), aa.getAlamat());
-                JOptionPane.showMessageDialog(null, "Data berhasil diubah", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                String result = aa.ubahData(); // remove arguments here
+                JOptionPane.showMessageDialog(null, result, "Informasi", JOptionPane.INFORMATION_MESSAGE);
                 tampil_database();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Data gagal diubah", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Informasi", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_ubahActionPerformed
@@ -271,15 +328,14 @@ public class FormSiswa extends javax.swing.JFrame {
             txt_id.requestFocus();
         } else {
             if (JOptionPane.showConfirmDialog(null, "Apakah Anda yakin akan menghapus data ini ?","Warning",2) == JOptionPane.YES_OPTION) {
-                String id = "";
                 try {
                     aa.setID(txt_id.getText());
-                    aa.hapusData(aa.getID());
-                    JOptionPane.showMessageDialog(null, "Data berhasil dihapus", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                    String result = aa.hapusData(); // remove arguments here
+                    JOptionPane.showMessageDialog(null, result, "Informasi", JOptionPane.INFORMATION_MESSAGE);
                     tampil_database();
                     reset_text();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Data gagal dihapus", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Informasi", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -304,6 +360,24 @@ public class FormSiswa extends javax.swing.JFrame {
             System.exit(0);
         }
     }//GEN-LAST:event_btn_keluarActionPerformed
+
+    private void btn_cariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cariActionPerformed
+        String keyword = txt_pencarian.getText().trim();
+        if(!keyword.isEmpty()) {
+            try {
+                aa.cariData(keyword);
+                tampil_hasil_pencarian(aa.getHasil());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Informasi", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Maaf, keyword pencarian belum diisi !", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_cariActionPerformed
+
+    private void btn_semuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_semuaActionPerformed
+        tampil_database();
+    }//GEN-LAST:event_btn_semuaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -341,20 +415,24 @@ public class FormSiswa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_cari;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JButton btn_keluar;
     private javax.swing.JButton btn_reset;
+    private javax.swing.JButton btn_semua;
     private javax.swing.JButton btn_simpan;
     private javax.swing.JButton btn_ubah;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabel_siswa;
     private javax.swing.JTextField txt_alamat;
     private javax.swing.JTextField txt_id;
     private javax.swing.JTextField txt_nama;
+    private javax.swing.JTextField txt_pencarian;
     // End of variables declaration//GEN-END:variables
 
 }

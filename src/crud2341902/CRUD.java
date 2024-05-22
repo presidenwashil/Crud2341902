@@ -6,8 +6,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CRUD {
-    private String id, nama, alamat;
+public class CRUD extends Controller implements DatabaseOperations {
     private Connection CRUDkoneksi;
     private PreparedStatement CRUDpsmt;
     private Statement CRUDstat;
@@ -23,30 +22,7 @@ public class CRUD {
         }
     }
     
-    public void setID(String id) {
-        this.id = id;
-    }
-    
-    public String getID() {
-        return id;
-    }
-    
-    public void setNama (String nama) {
-        this.nama = nama;
-    }
-    
-    public String getNama() {
-        return nama;
-    }
-    
-    public void setAlamat (String alamat) {
-        this.alamat = alamat;
-    }
-    
-    public String getAlamat() {
-        return alamat;
-    }
-    
+    @Override
     public ResultSet tampilData() {
         CRUDquery = "select * from siswa";
         try {
@@ -58,43 +34,77 @@ public class CRUD {
         return CRUDhasil;
     }
     
-    public void simpanData (String id, String nama, String alamat) {
+    @Override
+    public String simpanData () {
+        String result = "";
         CRUDquery = "insert into siswa values ( ?, ?, ? )";
         try {
             CRUDpsmt = CRUDkoneksi.prepareStatement(CRUDquery);
-            CRUDpsmt.setString(1, id);
-            CRUDpsmt.setString(2, nama);
-            CRUDpsmt.setString(3, alamat);
+            CRUDpsmt.setString(1, getID());
+            CRUDpsmt.setString(2, getNama());
+            CRUDpsmt.setString(3, getAlamat());
             CRUDpsmt.executeUpdate();
             CRUDpsmt.close();
+            result = "Data berhasil disimpan.";
         } catch (Exception e) {
             System.out.println(e);
+            result = "Data gagal disimpan.";
         }
+        return result;
     }
-    
-    public void ubahData (String id, String nama, String alamat) {
+
+    @Override
+    public String ubahData () {
+        String result = "";
         CRUDquery = "update siswa set nama = ?, alamat = ? where id = ?";
         try {
             CRUDpsmt = CRUDkoneksi.prepareStatement(CRUDquery);
-            CRUDpsmt.setString(1, nama);
-            CRUDpsmt.setString(2, alamat);
-            CRUDpsmt.setString(3, id);
+            CRUDpsmt.setString(1, getNama());
+            CRUDpsmt.setString(2, getAlamat());
+            CRUDpsmt.setString(3, getID());
             CRUDpsmt.executeUpdate();
             CRUDpsmt.close();
+            result = "Data berhasil diubah.";
+        } catch (Exception e) {
+            System.out.println(e);
+            result = "Data gagal diubah.";
+        }
+        return result;
+    }
+
+    @Override
+    public String hapusData() {
+        String result = "";
+        CRUDquery = "delete from siswa where id = ?";
+        try {
+            CRUDpsmt = CRUDkoneksi.prepareStatement(CRUDquery);
+            CRUDpsmt.setString(1, getID());
+            CRUDpsmt.executeUpdate();
+            CRUDpsmt.close();
+            result = "Data berhasil dihapus.";
+        } catch (Exception e) {
+            System.out.println(e);
+            result = "Data gagal dihapus.";
+        }
+        return result;
+    }
+
+    @Override
+    public void cariData(String keyword) {
+        CRUDquery = "select * from siswa where id like ? or nama like ? or alamat like ?";
+        try {
+            CRUDpsmt = CRUDkoneksi.prepareStatement(CRUDquery);
+            CRUDpsmt.setString(1, "%" + keyword + "%");
+            CRUDpsmt.setString(2, "%" + keyword + "%");
+            CRUDpsmt.setString(3, "%" + keyword + "%");
+            CRUDhasil = CRUDpsmt.executeQuery();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    
-    public void hapusData(String id) {
-        CRUDquery = "delete from siswa where id = ?";
-        try {
-            CRUDpsmt = CRUDkoneksi.prepareStatement(CRUDquery);
-            CRUDpsmt.setString(1, id);
-            CRUDpsmt.executeUpdate();
-            CRUDpsmt.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+
+    @Override
+    public ResultSet getHasil() {
+        return CRUDhasil;
     }
 }
