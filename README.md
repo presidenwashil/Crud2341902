@@ -1,5 +1,5 @@
 # Tampilan Program
-![Tampilan Program](screenshot/T9_PBO_MALAM_RAIHAN_2341902.png)
+![Tampilan Program](screenshot/UAP_2341902)
 
 # Panduan Instalasi Proyek NetBeans
 
