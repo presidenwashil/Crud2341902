@@ -1,5 +1,5 @@
 # Tampilan Program
-![Tampilan Program](screenshot/UAP_2341902)
+![Tampilan Program](screenshot/UAP_2341902.png)
 
 # Panduan Instalasi Proyek NetBeans
 
